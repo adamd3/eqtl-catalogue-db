@@ -1,4 +1,4 @@
-# Project Plan: eQTL Catalogue Interactive Browser
+# eQTL Catalogue Interactive Browser
 
 ## Overview
 
@@ -21,6 +21,3 @@ The goal of this project is to create a public, web-based application for explor
 
    - Framework: React, a popular JavaScript library for building user interfaces, will be used to create the interactive web application.
    - Visualization: D3.js will be integrated to create powerful and dynamic data visualizations, such as Manhattan plots, LocusZoom plots, and interactive tables.
-
-4. Containerization
-   - Tool: Docker will be used to containerize the application's components. A single docker-compose.yml file will orchestrate all services.
