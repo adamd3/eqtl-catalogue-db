@@ -66,7 +66,7 @@ def main():
                 header = next(reader)  # Read header row
                 # Find the index of 'qtl_group', 'study_id', and 'dataset_id' columns
                 try:
-                    qtl_group_idx = header.index("qtl_group")
+                    qtl_group_idx = header.index("sample_group")
                     study_id_idx = header.index("study_id")
                     dataset_id_idx = header.index("dataset_id")
                 except ValueError as e:
