@@ -1,8 +1,9 @@
 import ftplib
 import os
 import io
-import pandas as pd
+import csv
 from ftplib import FTP
+from urllib.request import urlopen
 
 
 def download_file(ftp_session, remote_path, local_path):
@@ -55,13 +56,33 @@ def main():
             # Step 1: Download and parse the metadata file to find Macrophage datasets
             metadata_url = "https://raw.githubusercontent.com/eQTL-Catalogue/eQTL-Catalogue-resources/master/data_tables/dataset_metadata.tsv"
             print(f"Downloading metadata from {metadata_url}...")
-            metadata_df = pd.read_csv(metadata_url, sep="\t")
+
+            macrophage_datasets = []
+            with urlopen(metadata_url) as response:
+                # Decode the response and read it as a CSV
+                decoded_content = response.read().decode("utf-8")
+                reader = csv.reader(io.StringIO(decoded_content), delimiter='\t')
+
+                header = next(reader)  # Read header row
+                # Find the index of 'qtl_group', 'study_id', and 'dataset_id' columns
+                try:
+                    qtl_group_idx = header.index("qtl_group")
+                    study_id_idx = header.index("study_id")
+                    dataset_id_idx = header.index("dataset_id")
+                except ValueError as e:
+                    print(f"Error: Missing expected column in metadata file: {e}")
+                    return
+
+                for row in reader:
+                    if "macrophage" in row[qtl_group_idx].lower():
+                        macrophage_datasets.append({
+                            "study_id": row[study_id_idx],
+                            "dataset_id": row[dataset_id_idx]
+                        })
+
             print("Metadata downloaded and parsed successfully.")
 
-            # Step 2: Filter for macrophage datasets
-            macrophage_datasets = metadata_df[metadata_df["qtl_group"].str.contains("macrophage", case=False, na=False)]
-
-            if macrophage_datasets.empty:
+            if not macrophage_datasets:
                 print("No macrophage datasets found in the metadata.")
                 return
 
@@ -71,7 +92,7 @@ def main():
             ftp.cwd(sumstats_dir)
             print(f"Changed to directory: {sumstats_dir}")
 
-            for _, row in macrophage_datasets.iterrows():
+            for row in macrophage_datasets:
                 study_id = row["study_id"]
                 dataset_id = row["dataset_id"]
 
