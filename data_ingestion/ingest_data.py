@@ -73,7 +73,7 @@ if __name__ == "__main__":
     # But for standalone ingestion, it's good to have.
     Base.metadata.create_all(bind=engine)
 
-    data_files = glob.glob("/Users/adamdinan/eqtl-catalogue-db/data/*.cc.tsv.gz")
+    data_files = glob.glob("./data/*.cc.tsv.gz")
     if not data_files:
         print("No .cc.tsv.gz files found in the ./data/ directory.")
     else:
