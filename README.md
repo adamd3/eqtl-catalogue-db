@@ -165,18 +165,18 @@ If you cannot use Docker and do not have `sudo` privileges for system-wide Postg
     You need a dedicated directory for PostgreSQL to store its data. Create one in your home directory (or another suitable location):
 
     ```bash
-    mkdir -p ~/eqtl_pgdata
-    initdb -D ~/eqtl_pgdata
+    mkdir -p ./eqtl_pgdata
+    initdb -D ./eqtl_pgdata
     ```
 
 4.  **Start the PostgreSQL server:**
 
     ```bash
-    pg_ctl -D ~/eqtl_pgdata -l ~/eqtl_pgdata/logfile start
+    pg_ctl -D ./eqtl_pgdata -l ./eqtl_pgdata/logfile start
     ```
 
-    (To stop the server: `pg_ctl -D ~/eqtl_pgdata stop`)
-    _Note: You might need to adjust the port if 5432 is not available or desired. This can be done by editing `postgresql.conf` within `~/eqtl_pgdata` before starting the server._
+    (To stop the server: `pg_ctl -D ./eqtl_pgdata stop`)
+    _Note: You might need to adjust the port if 5432 is not available or desired. This can be done by editing `postgresql.conf` within `./eqtl_pgdata` before starting the server._
 
 5.  **Create the database and user, and grant privileges:**
     Once the PostgreSQL server is running, create the database and a user with a password. Then, grant the necessary privileges to this user on the database.
@@ -231,4 +231,4 @@ If you cannot use Docker and do not have `sudo` privileges for system-wide Postg
 - **Resource Usage:** Running a full PostgreSQL server within your user space can consume significant CPU and RAM. Monitor your server's resources.
 - **Performance:** Performance might be lower compared to a system-installed or Dockerized PostgreSQL, especially for high-throughput operations.
 - **Management:** Starting, stopping, and managing the PostgreSQL server will be a manual process within your Conda environment. For long-running services, consider using a process manager (like `systemd` or `supervisor`) if available and configurable without `sudo`.
-- **Persistence:** Ensure your `~/eqtl_pgdata` directory is backed up regularly if it contains critical data.
+- **Persistence:** Ensure your `./eqtl_pgdata` directory is backed up regularly if it contains critical data.
