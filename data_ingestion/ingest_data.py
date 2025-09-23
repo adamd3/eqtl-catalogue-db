@@ -43,7 +43,7 @@ def ingest_data(file_path: str):
     db = SessionLocal()
     try:
         # Read gzipped TSV using pandas
-        df = pd.read_csv(file_path, sep='\t', compression='gzip')
+        df = pd.read_csv(file_path, sep='\t', compression='gzip', low_memory=False)
         
         # Rename columns to match model attributes if necessary (e.g., if there are spaces or special chars)
         # For now, assuming column names in TSV match model attributes directly
