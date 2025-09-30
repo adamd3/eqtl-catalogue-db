@@ -15,7 +15,7 @@ class EQTLData(Base):
     __tablename__ = "eqtl_data"
     id = Column(Integer, primary_key=True, index=True) # Add a primary key
     molecular_trait_id = Column(String, index=True)
-    chromosome = Column(String, index=True)
+    chromosome = Column(String(3), index=True)
     position = Column(Integer)
     ref = Column(String)
     alt = Column(String)
@@ -29,7 +29,6 @@ class EQTLData(Base):
     ac = Column(Integer)
     an = Column(Integer)
     r2 = Column(Float)
-    molecular_trait_object_id = Column(String)
     gene_id = Column(String, index=True)
     median_tpm = Column(Float)
     rsid = Column(String, index=True)

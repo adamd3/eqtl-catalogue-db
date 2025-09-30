@@ -19,7 +19,7 @@ class EQTLData(Base):
     __tablename__ = "eqtl_data"
     id = Column(Integer, primary_key=True, index=True)
     molecular_trait_id = Column(String, index=True)
-    chromosome = Column(String, index=True)
+    chromosome = Column(String(3), index=True)
     position = Column(Integer)
     ref = Column(String)
     alt = Column(String)
@@ -33,14 +33,11 @@ class EQTLData(Base):
     ac = Column(Integer)
     an = Column(Integer)
     r2 = Column(Float)
-    molecular_trait_object_id = Column(String)
     gene_id = Column(String, index=True)
     median_tpm = Column(Float)
     rsid = Column(String, index=True)
 
 # Function to ingest data
-def ingest_data(file_path: str):
-    db = SessionLocal()
     try:
         # Read gzipped TSV using pandas
         df = pd.read_csv(file_path, sep='\t', compression='gzip', low_memory=False)
@@ -48,25 +45,15 @@ def ingest_data(file_path: str):
         # Rename columns to match model attributes if necessary (e.g., if there are spaces or special chars)
         # For now, assuming column names in TSV match model attributes directly
         
-        # Convert DataFrame to list of dictionaries, then to EQTLData objects
-        data_to_insert = []
-        for index, row in df.iterrows():
-            # Handle potential NaN values for float columns by converting to None
-            row_dict = row.to_dict()
-            for key, value in row_dict.items():
-                if pd.isna(value):
-                    row_dict[key] = None
-            data_to_insert.append(EQTLData(**row_dict))
+        # Replace NaN values with None for database compatibility
+        df = df.where(pd.notna(df), None)
 
-        # Bulk insert data
-        db.bulk_save_objects(data_to_insert)
-        db.commit()
-        print(f"Successfully ingested {len(data_to_insert)} rows from {file_path}")
+        # Use to_sql for bulk insertion
+        # The 'multi' method is generally faster for PostgreSQL
+        df.to_sql(EQTLData.__tablename__, con=engine, if_exists='append', index=False, method='multi')
+        print(f"Successfully ingested {len(df)} rows from {file_path}")
     except Exception as e:
-        db.rollback()
         print(f"Error ingesting data from {file_path}: {e}")
-    finally:
-        db.close()
 
 if __name__ == "__main__":
     # Ensure tables are created (this should ideally be handled by the backend on startup)
