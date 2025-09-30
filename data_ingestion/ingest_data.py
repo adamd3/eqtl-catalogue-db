@@ -41,20 +41,20 @@ class EQTLData(Base):
 
 # Function to ingest data
 def ingest_data(file_path: str):
+    total_rows_ingested = 0
     try:
-        # Read gzipped TSV using pandas
-        df = pd.read_csv(file_path, sep="\t", compression="gzip", low_memory=False)
+        # Read gzipped TSV in chunks using pandas
+        # low_memory=True is used here to potentially reduce memory usage during parsing,
+        # though chunksize is the primary mechanism for memory control.
+        for chunk_df in pd.read_csv(file_path, sep="\t", compression="gzip", chunksize=100000, low_memory=True):
+            # Replace NaN values with None for database compatibility within each chunk
+            chunk_df = chunk_df.where(pd.notna(chunk_df), None)
 
-        # Rename columns to match model attributes if necessary (e.g., if there are spaces or special chars)
-        # For now, assuming column names in TSV match model attributes directly
-
-        # Replace NaN values with None for database compatibility
-        df = df.where(pd.notna(df), None)
-
-        # Use to_sql for bulk insertion
-        # The 'multi' method is generally faster for PostgreSQL
-        df.to_sql(EQTLData.__tablename__, con=engine, if_exists="append", index=False, method="multi")
-        print(f"Successfully ingested {len(df)} rows from {file_path}")
+            # Use to_sql for bulk insertion of each chunk
+            # The 'multi' method is generally faster for PostgreSQL
+            chunk_df.to_sql(EQTLData.__tablename__, con=engine, if_exists="append", index=False, method="multi")
+            total_rows_ingested += len(chunk_df)
+        print(f"Successfully ingested {total_rows_ingested} rows from {file_path}")
     except Exception as e:
         print(f"Error ingesting data from {file_path}: {e}")
 
