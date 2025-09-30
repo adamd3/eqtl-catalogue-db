@@ -38,6 +38,7 @@ class EQTLData(Base):
     rsid = Column(String, index=True)
 
 # Function to ingest data
+def ingest_data(file_path: str):
     try:
         # Read gzipped TSV using pandas
         df = pd.read_csv(file_path, sep='\t', compression='gzip', low_memory=False)
