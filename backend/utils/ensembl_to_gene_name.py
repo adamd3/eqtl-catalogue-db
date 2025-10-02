@@ -4,10 +4,10 @@ import sys
 from functools import lru_cache
 import re
 import time
+import argparse
 
 # --- Configuration ---
-INPUT_FILE = "eqtl_catalogue_rsid_rs194810.tsv"
-OUTPUT_FILE = "eqtl_catalogue_with_gene_names.tsv"
+# File paths are now handled by command-line arguments (argparse) with defaults.
 ENSEMBL_ID_COLUMN = "gene_id"
 NEW_COLUMN_NAME = "gene_symbol"
 # ---------------------
@@ -61,20 +61,20 @@ def lookup_gene_symbol(ensembl_id, mg_client, max_retries=3):
     return "N/A"  # Should be caught by the loop, but as a safeguard
 
 
-def main():
+def main(input_file, output_file):
     """
     Reads the input TSV, performs gene name lookups, and writes the output TSV.
     """
-    print(f"Starting gene symbol lookup for file: {INPUT_FILE}")
+    print(f"Starting gene symbol lookup for file: {input_file}")
 
     # 1. Initialize MyGene.info client
     mg = mygene.MyGeneInfo()
 
     # 2. Read the TSV file using tab as the separator
     try:
-        df = pd.read_csv(INPUT_FILE, sep="\t", skipinitialspace=True)
+        df = pd.read_csv(input_file, sep="\t", skipinitialspace=True)
     except FileNotFoundError:
-        print(f"Error: Input file '{INPUT_FILE}' not found.", file=sys.stderr)
+        print(f"Error: Input file '{input_file}' not found.", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
         print(f"Error reading file: {e}", file=sys.stderr)
@@ -99,19 +99,37 @@ def main():
 
     # 4. Write the updated DataFrame to a new TSV file
     try:
-        df.to_csv(OUTPUT_FILE, sep="\t", index=False)
-        print(f"Success! Results saved to: {OUTPUT_FILE}")
+        df.to_csv(output_file, sep="\t", index=False)
+        print(f"Success! Results saved to: {output_file}")
     except Exception as e:
         print(f"Error writing output file: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":
-    # If you want to change the file name, you can pass it as a command-line argument.
-    # E.g., python tsv_gene_lookup.py my_input.tsv my_output.tsv
-    if len(sys.argv) == 3:
-        INPUT_FILE = sys.argv[1]
-        OUTPUT_FILE = sys.argv[2]
-    elif len(sys.argv) == 2:
-        INPUT_FILE = sys.argv[1]
+    # Use argparse for robust command-line argument handling
+    parser = argparse.ArgumentParser(
+        description="Add gene symbols to a TSV file using Ensembl IDs and MyGene.info API."
+    )
 
-    main()
+    # Input file argument
+    parser.add_argument(
+        "-i",
+        "--input",
+        type=str,
+        default="eqtl_catalogue_rsid_rs194810.tsv",
+        help="Path to the input TSV file containing Ensembl IDs.",
+    )
+
+    # Output file argument
+    parser.add_argument(
+        "-o",
+        "--output",
+        type=str,
+        default="eqtl_catalogue_with_gene_names.tsv",
+        help="Path for the output TSV file with added gene symbols.",
+    )
+
+    args = parser.parse_args()
+
+    # Call main with the parsed arguments
+    main(args.input, args.output)
