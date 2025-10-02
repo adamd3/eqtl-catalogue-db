@@ -37,16 +37,24 @@ class EQTLData(Base):
     gene_id = Column(String, index=True)
     median_tpm = Column(Float)
     rsid = Column(String, index=True)
+    study_id = Column(String, index=True)
 
 
 # Function to ingest data
 def ingest_data(file_path: str):
     total_rows_ingested = 0
     try:
+        # Extract study_id from file_path
+        file_name = os.path.basename(file_path)
+        study_id = file_name.split('.')[0] # Assumes filename format like QTD000393.cc.tsv.gz
+
         # Read gzipped TSV in chunks using pandas
         # low_memory=True is used here to potentially reduce memory usage during parsing,
         # though chunksize is the primary mechanism for memory control.
         for chunk_df in pd.read_csv(file_path, sep="\t", compression="gzip", chunksize=100000, low_memory=True):
+            # Add the study_id column to the DataFrame
+            chunk_df['study_id'] = study_id
+
             # Replace NaN values with None for database compatibility within each chunk
             chunk_df = chunk_df.where(pd.notna(chunk_df), None)
 
@@ -62,6 +70,7 @@ def ingest_data(file_path: str):
 if __name__ == "__main__":
     # Ensure tables are created (this should ideally be handled by the backend on startup)
     # But for standalone ingestion, it's good to have.
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
     data_files = glob.glob("./data/*.cc.tsv.gz")
