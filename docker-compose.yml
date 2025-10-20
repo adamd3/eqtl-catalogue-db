@@ -5,7 +5,7 @@ services:
     image: postgres:13
     environment:
       POSTGRES_DB: eqtl_catalogue
-      POSTGRES_USER: user
+      POSTGRES_USER: eqtl_user
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
