@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Macrophage eQTL Explorer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+      h1 {
+        color: #333;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .search-section {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .search-section input[type="text"] {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px;
+        width: 200px;
+      }
+      .search-section button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .search-section button:hover {
+        background-color: #0056b3;
+      }
+      .plot-section {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .plot-section h2 {
+        margin-top: 0;
+        color: #555;
+      }
+      .results-table-section {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .results-table-section table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .results-table-section th, .results-table-section td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      .results-table-section th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Macrophage eQTL Explorer</h1>
+
+      <div class="search-section">
+        <label for="gene-search">Search Gene:</label>
+        <input type="text" id="gene-search" placeholder="e.g., RBFA">
+        <button id="search-button">Search</button>
+      </div>
+
+      <div class="plot-section">
+        <h2>Locus Plot</h2>
+        <div id="locus-plot"></div>
+      </div>
+
+      <div class="plot-section">
+        <h2>Effect Size Plot</h2>
+        <div id="effect-size-plot"></div>
+      </div>
+
+      <div class="results-table-section">
+        <h2>Results Table</h2>
+        <div id="results-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Variant ID</th>
+                <th>RSID</th>
+                <th>Gene ID</th>
+                <th>Gene Name</th>
+                <th>P-value</th>
+                <th>Beta</th>
+                <th>SE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Results will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
