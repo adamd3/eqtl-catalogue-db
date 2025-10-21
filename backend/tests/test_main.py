@@ -62,3 +62,47 @@ def test_read_associations_invalid_pvalue_threshold(client):
     data = response.json()
     assert "detail" in data
     assert "Input should be a valid number, unable to parse string as a number" in data["detail"][0]["msg"]
+
+def test_get_effect_size_valid_ids(client):
+    """
+    Test the /effect_size/ endpoint with valid variant_id and gene_id obtained from /associations/.n    """
+    # First, get a valid association from the /associations/ endpoint
+    gene_name_for_lookup = "RBFA"
+    p_value_threshold_for_lookup = 0.05
+    associations_response = client.get(f"/associations/?gene_name={gene_name_for_lookup}&p_value_threshold={p_value_threshold_for_lookup}")
+    assert associations_response.status_code == 200
+    associations_data = associations_response.json()
+    assert len(associations_data) > 0
+
+    # Extract a valid variant_id and gene_id from the first association
+    first_association = associations_data[0]
+    variant_id = first_association["variant"]["variant_id"]
+    gene_id = first_association["gene"]["gene_id"]
+
+
+    # Now, test the /effect_size/ endpoint with these valid IDs
+    response = client.get(f"/effect_size/?variant_id={variant_id}&gene_id={gene_id}")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert "beta" in data
+    assert "se" in data
+    assert "variant" in data
+    assert "gene" in data
+
+    assert data["variant"]["variant_id"] == variant_id
+    assert data["gene"]["gene_id"] == gene_id
+
+def test_get_effect_size_not_found(client):
+    """
+    Test the /effect_size/ endpoint with non-existent variant_id and gene_id.
+    """
+    variant_id = "NONEXISTENT_VARIANT"
+    gene_id = "NONEXISTENT_GENE"
+    response = client.get(f"/effect_size/?variant_id={variant_id}&gene_id={gene_id}")
+
+    assert response.status_code == 404
+    data = response.json()
+    assert "detail" in data
+    assert data["detail"] == "Effect size not found for the given variant and gene."

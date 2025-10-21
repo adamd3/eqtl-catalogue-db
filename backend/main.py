@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import create_engine, Column, Integer, Float, text, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, Session, relationship, declarative_base
 import os
+from typing import Optional
+from pydantic import BaseModel
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -61,9 +62,6 @@ async def health_check(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database connection failed: {e}")
 
-from typing import Optional
-from pydantic import BaseModel
-
 class VariantBase(BaseModel):
     variant_id: str
     rsid: Optional[str]
@@ -94,6 +92,15 @@ class AssociationBase(BaseModel):
     class Config:
         from_attributes = True
 
+class EffectSizeResponse(BaseModel):
+    beta: float
+    se: float
+    variant: VariantBase
+    gene: GeneBase
+
+    class Config:
+        from_attributes = True
+
 @app.get("/associations/", response_model=list[AssociationBase])
 async def get_associations(
     gene_name: Optional[str] = None,
@@ -108,3 +115,19 @@ async def get_associations(
     query = query.filter(Association.pvalue <= p_value_threshold)
     
     return query.limit(100).all() # Limit to 100 for now to avoid large responses
+
+@app.get("/effect_size/", response_model=EffectSizeResponse)
+async def get_effect_size(
+    variant_id: str,
+    gene_id: str,
+    db: Session = Depends(get_db)
+):
+    association = db.query(Association).join(Gene).join(Variant).filter(
+        Association.variant_id == variant_id,
+        Association.gene_id == gene_id
+    ).first()
+
+    if not association:
+        raise HTTPException(status_code=404, detail="Effect size not found for the given variant and gene.")
+
+    return association

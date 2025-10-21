@@ -4,3 +4,6 @@ backend/venv/
 
 # SQL dump files (large, not to be committed)
 data/*.sql
+
+# ignore __pycache__ in any directory
+**/__pycache__/
