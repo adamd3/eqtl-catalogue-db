@@ -22,7 +22,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://user:password@db:5432/eqtl_catalogue
+      DATABASE_URL: postgresql://eqtl_user:password@db:5432/eqtl_catalogue
 
 volumes:
   db_data:
