@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import create_engine, Column, Integer, Float, text, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, Session, relationship
+from sqlalchemy.orm import sessionmaker, Session, relationship, declarative_base
 import os
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -96,7 +96,7 @@ class AssociationBase(BaseModel):
 
 @app.get("/associations/", response_model=list[AssociationBase])
 async def get_associations(
-    gene_name: str | None = None,
+    gene_name: Optional[str] = None,
     p_value_threshold: float = 0.05,
     db: Session = Depends(get_db)
 ):
