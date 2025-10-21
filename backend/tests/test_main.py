@@ -65,7 +65,8 @@ def test_read_associations_invalid_pvalue_threshold(client):
 
 def test_get_effect_size_valid_ids(client):
     """
-    Test the /effect_size/ endpoint with valid variant_id and gene_id obtained from /associations/.n    """
+    Test the /effect_size/ endpoint with valid variant_id and gene_id obtained from /associations/.
+    """
     # First, get a valid association from the /associations/ endpoint
     gene_name_for_lookup = "RBFA"
     p_value_threshold_for_lookup = 0.05
@@ -78,7 +79,6 @@ def test_get_effect_size_valid_ids(client):
     first_association = associations_data[0]
     variant_id = first_association["variant"]["variant_id"]
     gene_id = first_association["gene"]["gene_id"]
-
 
     # Now, test the /effect_size/ endpoint with these valid IDs
     response = client.get(f"/effect_size/?variant_id={variant_id}&gene_id={gene_id}")

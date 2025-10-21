@@ -7,3 +7,5 @@ data/*.sql
 
 # ignore __pycache__ in any directory
 **/__pycache__/
+
+GEMINI.md

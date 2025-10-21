@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, Integer, Float, text, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, Session, relationship, declarative_base
 import os
@@ -40,6 +41,20 @@ class Association(Base):
     variant = relationship("Variant", back_populates="associations")
     
 app = FastAPI()
+
+# Add CORS middleware
+orn_origins = [
+    "http://localhost",
+    "http://localhost:5173",  # Allow requests from your Vite frontend
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency to get the DB session
 def get_db():
