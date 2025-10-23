@@ -29,12 +29,7 @@ jobs:
           docker-compose logs db | grep "database system is ready to accept connections" && break
           sleep 5
         done
-    - name: Populate database with gene data
-      run: docker-compose exec -T db psql -U eqtl_user -d eqtl_catalogue -f /data/gene.sql
-    - name: Populate database with variant data
-      run: docker-compose exec -T db psql -U eqtl_user -d eqtl_catalogue -f /data/variant.sql
-    - name: Populate database with association data
-      run: docker-compose exec -T db psql -U eqtl_user -d eqtl_catalogue -f /data/association.sql
+
     - name: Wait for FastAPI to be ready
       run: |
         docker-compose logs backend & # Run logs in background
