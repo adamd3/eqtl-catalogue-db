@@ -20,7 +20,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y docker-compose
     - name: Start services
-      run: docker-compose up -d
+      run: |
+        docker-compose build
+        docker-compose up -d
     - name: Wait for DB to be ready
       run: |
         for i in $(seq 1 10); do
