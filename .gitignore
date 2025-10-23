@@ -2,8 +2,9 @@
 # Python virtual environment
 backend/venv/
 
-# SQL dump files (large, not to be committed)
-data/*.sql
+/data/
+!/data/test_*
+
 
 # ignore __pycache__ in any directory
 **/__pycache__/
