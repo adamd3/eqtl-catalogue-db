@@ -15,6 +15,24 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+    - name: Start services
+      run: docker-compose up -d
+    - name: Wait for DB to be ready
+      run: |
+        for i in $(seq 1 10); do
+          docker-compose logs db | grep "database system is ready to accept connections" && break
+          sleep 5
+        done
+    - name: Wait for FastAPI to be ready
+      run: |
+        for i in $(seq 1 10); do
+          curl -f http://localhost:8001/health && break
+          sleep 5
+        done
     - name: Run tests
       run: |
         pytest backend/tests/
