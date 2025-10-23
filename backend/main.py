@@ -43,7 +43,7 @@ class Association(Base):
 app = FastAPI()
 
 # Add CORS middleware
-orn_origins = [
+origins = [
     "http://localhost",
     "http://localhost:5173",  # Allow requests from your Vite frontend
 ]
