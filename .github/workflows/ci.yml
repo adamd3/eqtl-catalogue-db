@@ -29,9 +29,10 @@ jobs:
         done
     - name: Wait for FastAPI to be ready
       run: |
+        docker-compose logs backend & # Run logs in background
         for i in $(seq 1 10); do
-          curl -f http://localhost:8001/health && break
           sleep 5
+          curl -f http://localhost:8001/health && break
         done
     - name: Print backend logs
       run: docker-compose logs backend
