@@ -110,6 +110,7 @@ class AssociationBase(BaseModel):
 class EffectSizeResponse(BaseModel):
     beta: float
     se: float
+    pvalue: float # Added pvalue
     variant: VariantBase
     gene: GeneBase
 
