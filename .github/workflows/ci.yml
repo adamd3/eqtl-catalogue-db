@@ -33,6 +33,8 @@ jobs:
           curl -f http://localhost:8001/health && break
           sleep 5
         done
+    - name: Print backend logs
+      run: docker-compose logs backend
     - name: Run tests
       run: |
         pytest backend/tests/
