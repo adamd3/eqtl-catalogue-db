@@ -2,8 +2,8 @@
 # Python virtual environment
 backend/venv/
 
-/data/
-!/data/test_*
+# /data/
+# !/data/test_*
 
 
 # ignore __pycache__ in any directory
