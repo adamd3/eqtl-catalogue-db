@@ -1,0 +1,3 @@
+COPY public.gene (gene_id, median_tpm, gene_name) FROM '/docker-entrypoint-initdb.d/raw_data/test_gene_data.sql' WITH (FORMAT text, DELIMITER E'\t');
+COPY public.variant (variant_id, rsid, chromosome, position, ref, alt, ma_samples, maf, type, ac, an) FROM '/docker-entrypoint-initdb.d/raw_data/test_variant_data.sql' WITH (FORMAT text, DELIMITER E'	');
+COPY public.association (id, variant_id, gene_id, pvalue, beta, se, r2) FROM '/docker-entrypoint-initdb.d/raw_data/test_association_data.sql' WITH (FORMAT text, DELIMITER E'\t');
