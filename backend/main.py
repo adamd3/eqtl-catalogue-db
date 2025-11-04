@@ -18,6 +18,17 @@ class Gene(Base):
     median_tpm = Column(Float)
     gene_name = Column(String(30), index=True)
     associations = relationship("Association", back_populates="gene")
+    exons = relationship("Exon", back_populates="gene")
+
+class Exon(Base):
+    __tablename__ = "exon"
+    id = Column(Integer, primary_key=True, index=True)
+    gene_id = Column(String(30), ForeignKey("gene.gene_id"))
+    chromosome = Column(String(2))
+    start_position = Column(Integer)
+    end_position = Column(Integer)
+    strand = Column(String(1))
+    gene = relationship("Gene", back_populates="exons")
 
 class Variant(Base):
     __tablename__ = "variant"
@@ -96,6 +107,17 @@ class GeneBase(BaseModel):
     class Config:
         from_attributes = True
 
+class ExonBase(BaseModel):
+    id: int
+    gene_id: str
+    chromosome: str
+    start_position: int
+    end_position: int
+    strand: str
+
+    class Config:
+        from_attributes = True
+
 class AssociationBase(BaseModel):
     id: int
     pvalue: float
@@ -147,3 +169,13 @@ async def get_effect_size(
         raise HTTPException(status_code=404, detail="Effect size not found for the given variant and gene.")
 
     return association
+
+@app.get("/exons/{gene_id}", response_model=list[ExonBase])
+async def get_exons_for_gene(
+    gene_id: str,
+    db: Session = Depends(get_db)
+):
+    exons = db.query(Exon).filter(Exon.gene_id == gene_id).all()
+    if not exons:
+        raise HTTPException(status_code=404, detail="Exons not found for the given gene ID.")
+    return exons
