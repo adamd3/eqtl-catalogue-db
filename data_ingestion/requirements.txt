@@ -2,3 +2,5 @@ sqlalchemy
 psycopg2-binary
 pandas
 tqdm
+requests
+gffutils
