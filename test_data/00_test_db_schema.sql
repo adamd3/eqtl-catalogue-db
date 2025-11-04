@@ -74,6 +74,43 @@ CREATE TABLE public.variant (
 ALTER TABLE public.variant OWNER TO eqtl_user;
 
 --
+-- Name: exon; Type: TABLE; Schema: public; Owner: eqtl_user
+--
+
+CREATE TABLE public.exon (
+    id SERIAL NOT NULL,
+    gene_id character varying(30),
+    chromosome character varying(2),
+    start_position integer,
+    end_position integer,
+    strand character varying(1)
+);
+
+
+ALTER TABLE public.exon OWNER TO eqtl_user;
+
+--
+-- Name: exon exon_pkey; Type: CONSTRAINT; Schema: public; Owner: eqtl_user
+--
+
+ALTER TABLE ONLY public.exon
+    ADD CONSTRAINT exon_pkey PRIMARY KEY (id);
+
+--
+-- Name: idx_exon_gene_id; Type: INDEX; Schema: public; Owner: eqtl_user
+--
+
+CREATE INDEX idx_exon_gene_id ON public.exon USING btree (gene_id);
+
+--
+-- Name: exon exon_gene_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: eqtl_user
+--
+
+ALTER TABLE ONLY public.exon
+    ADD CONSTRAINT exon_gene_id_fkey FOREIGN KEY (gene_id) REFERENCES public.gene(gene_id);
+
+
+--
 -- Name: association association_pkey; Type: CONSTRAINT; Schema: public; Owner: eqtl_user
 --
 
