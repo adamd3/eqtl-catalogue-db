@@ -50,6 +50,7 @@
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
       }
       .plot-section h2 {
         margin-top: 0;
@@ -85,10 +86,22 @@
         <button id="search-button">Search</button>
       </div>
 
-      <div class="plot-section">
-        <h2>Locus Plot</h2>
-        <div id="locus-plot"></div>
-      </div>
+                  <div class="plot-section">
+
+                    <h2>Locus Plot</h2>
+                    <p style="font-size: 0.9em; color: #666;">Click on a point in the Locus Plot to display the Effect Size plot below.</p>
+
+                    <div class="zoom-controls">
+
+                      <button id="zoom-in">+</button>
+
+                      <button id="zoom-out">-</button>
+
+                    </div>
+
+                    <div id="locus-plot" style="position: relative;"></div>
+
+                  </div>
 
       <div class="plot-section">
         <h2>Effect Size</h2>
@@ -97,17 +110,19 @@
 
       <div class="results-table-section">
         <h2>Results Table</h2>
+        <button id="download-results-button" style="margin-bottom: 10px; padding: 8px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Download Results (CSV)</button>
         <div id="results-table">
           <table>
             <thead>
               <tr>
                 <th>Variant ID</th>
-                <th>RSID</th>
-                <th>Gene ID</th>
-                <th>Gene Name</th>
-                <th>P-value</th>
-                <th>Beta</th>
-                <th>SE</th>
+                <th data-column="rsid">RSID</th>
+                <th data-column="gene_id">Gene ID</th>
+                <th data-column="gene_name">Gene Name</th>
+                <th data-column="pvalue">P-value</th>
+                <th data-column="beta">Beta</th>
+                <th data-column="se">SE</th>
+                <th data-column="position">Position</th>
               </tr>
             </thead>
             <tbody>
