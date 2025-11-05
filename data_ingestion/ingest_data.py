@@ -34,6 +34,7 @@ class EQTLData(Base):
     ac = Column(Integer)
     an = Column(Integer)
     r2 = Column(Float)
+    molecular_trait_object_id = Column(String)
     gene_id = Column(String, index=True)
     median_tpm = Column(Float)
     rsid = Column(String, index=True)
