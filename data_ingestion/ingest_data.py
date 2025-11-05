@@ -51,7 +51,7 @@ def ingest_data(file_path: str):
         # Read gzipped TSV in chunks using pandas
         # low_memory=True is used here to potentially reduce memory usage during parsing,
         # though chunksize is the primary mechanism for memory control.
-        for chunk_df in pd.read_csv(file_path, sep="\t", compression="gzip", chunksize=1000, low_memory=True):
+        for chunk_df in pd.read_csv(file_path, sep="\t", compression="gzip", chunksize=100000, low_memory=True):
             # Add the dataset_id column to the DataFrame
             chunk_df["dataset_id"] = dataset_id
 
